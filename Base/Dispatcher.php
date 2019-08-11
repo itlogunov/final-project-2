@@ -25,6 +25,12 @@ class Dispatcher
             ],
             'Files' => [
                 'index' => 'File.list'
+            ],
+            'Logout' => [
+                'index' => 'User.logout'
+            ],
+            'Change-photo' => [
+                'index' => 'File.changeUserPhoto'
             ]
         ];
     }

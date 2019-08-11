@@ -16,6 +16,7 @@ Capsule::schema()->create('users', function ($table) {
     $table->string('email')->unique();
     $table->integer('age')->unsigned();
     $table->text('description');
+    $table->string('password');
     $table->timestamps();
 });
 
@@ -26,3 +27,5 @@ Capsule::schema()->create('files', function ($table) {
     $table->string('name');
     $table->integer('user_id')->unsigned();
 });
+
+echo 'Миграция создана!' . PHP_EOL;

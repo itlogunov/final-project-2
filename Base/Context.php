@@ -3,6 +3,8 @@
 namespace Base;
 
 
+use App\Models\User;
+
 class Context
 {
     private static $_instance;
@@ -15,6 +17,9 @@ class Context
 
     /** @var DbConnection */
     private $_dbConnection;
+
+    /** @var User */
+    private $_user;
 
     private function __construct()
     {
@@ -79,5 +84,18 @@ class Context
     public function setDbConnection(DbConnection $dbConnection): void
     {
         $this->_dbConnection = $dbConnection;
+    }
+
+    public function getUser()
+    {
+        return $this->_user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->_user = $user;
     }
 }

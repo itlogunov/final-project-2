@@ -6,11 +6,15 @@
         <th>Фотография</th>
         <th>Действия</th>
     </tr>
-    <tr>
-        <td>1.jpg</td>
-        <td><img src="http://lorempixel.com/people/200/200/" alt=""></td>
-        <td>
-            <a href="">Удалить аватарку пользователя</a>
-        </td>
-    </tr>
+    <?php foreach($this->files as $file): ?>
+        <tr>
+            <td><?= $file['name']; ?></td>
+            <td>
+                <img src="<?= $file['name']; ?>" alt="">
+            </td>
+            <td>
+                <a href="/file/destroy/?id=<?= $file['id']; ?>">Удалить аватарку пользователя</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
 </table>

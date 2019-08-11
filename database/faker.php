@@ -9,16 +9,16 @@ use Base\DbConnection;
 $dbConnection = new DbConnection();
 $dbConnection->openConnection();
 
-
 $faker = Faker\Factory::create('ru_Ru');
 
 for ($i = 0; $i < 10; $i++) {
     $user = new User();
 
     $user->name = $faker->name;
-    $user->age = mt_rand(18, 35);
+    $user->age = mt_rand(10, 25);
     $user->email = $faker->email;
     $user->description = $faker->realText(200);
+    $user->password = sha1('qwerty');
     $user->save();
 
     $fileUrl = $faker->imageUrl(200, 200, 'people', true);
@@ -31,5 +31,6 @@ for ($i = 0; $i < 10; $i++) {
         $file->user_id = $user->getKey('id');
         $file->save();
     }
-
 }
+
+echo 'Данные заполнены!';

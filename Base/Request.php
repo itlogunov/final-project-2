@@ -7,22 +7,41 @@ class Request
 {
     private $_controllerName = '';
     private $_actionName = '';
-    private $_params = [];
+    private $_requestUri = '';
+    private $_requestParams = [];
 
     public function __construct()
     {
-        $parts = explode('/', $_SERVER['REQUEST_URI']);
+        $this->_requestUri = trim($_SERVER['REQUEST_URI']);
+
+        $parts = explode('/', $this->_requestUri);
         $this->_controllerName = $parts[1] ?? '';
         $this->_actionName = $parts[2] ?? '';
 
-        $this->_paramsTypeGet();
+        $this->_setRequestParams();
     }
 
-    private function _paramsTypeGet(): void
+    private function _setRequestParams(): void
     {
-        foreach ($_GET as $key => $value) {
-            $this->_params[htmlspecialchars($key)] = htmlspecialchars($value);
+        foreach ($_REQUEST as $key => $value) {
+            $this->_requestParams[trim(htmlspecialchars($key))] = trim(htmlspecialchars($value));
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getIp(): string
+    {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserAgent(): string
+    {
+        return $_SERVER['HTTP_USER_AGENT'];
     }
 
     /**
@@ -44,8 +63,8 @@ class Request
     /**
      * @return array
      */
-    public function getParams(): array
+    public function getRequestParams(): array
     {
-        return $this->_params;
+        return $this->_requestParams;
     }
 }

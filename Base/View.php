@@ -40,6 +40,6 @@ class View
         include '../App/Views/Layouts/header.phtml';
         include $template;
         include '../App/Views/Layouts/footer.phtml';
-        echo ob_get_clean();
+        return ob_get_clean();
     }
 }

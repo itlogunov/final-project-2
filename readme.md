@@ -1,13 +1,9 @@
+# Соединение с БД
+/.env
+
 # Создание данных в БД
-/databases/migrations.php
+cd databases
 
-/databases/faker.php
+php migrations.php
 
-# Роуты:
-/auth
-
-/register
-
-/users
-
-/files
+php faker.php

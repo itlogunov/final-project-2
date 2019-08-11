@@ -3,6 +3,7 @@
 namespace Base;
 
 
+use App\Models\User;
 use Base\Exceptions\Error404;
 
 class Application
@@ -24,11 +25,24 @@ class Application
         $this->_context->setDbConnection($dbConnection);
     }
 
+    private function _initUser()
+    {
+        $session = Session::instance();
+        $userId = $session->getUserId();
+        if ($userId) {
+            if ($session->validate()) {
+                $user = new User();
+                $this->_context->setUser($user);
+            }
+        }
+    }
+
     public function run()
     {
         try {
 
             self::_init();
+            self::_initUser();
 
             $this->_context->getDispatcher()->dispatch();
             $dispatcher = $this->_context->getDispatcher();
@@ -38,7 +52,7 @@ class Application
                 throw new Error404('Class ' . $controllerFileName . ' not exists');
             }
 
-            /** @var Controller */
+            /** @var Controller $controllerObject */
             $controllerObject = new $controllerFileName();
 
             $actionName = $dispatcher->getActionName();
@@ -52,10 +66,14 @@ class Application
             $view = new View();
             $controllerObject->view = $view;
             $controllerObject->$actionName();
-            $view->render($templatePath);
+
+            if ($controllerObject->isRender()) {
+                echo $view->render($templatePath);
+            }
 
         } catch (Error404 $e) {
             header('HTTP/1.0 404 Not Found');
+            echo '<h1>ошибка 404</h1>';
             trigger_error($e->getMessage());
         }
     }
