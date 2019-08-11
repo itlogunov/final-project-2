@@ -14,9 +14,14 @@ class Application
     {
         $this->_context = Context::instance();
 
-        $this->_context->setRequest(new Request());
-        $this->_context->setDispatcher(new Dispatcher());
-        $this->_context->setDb(new DB());
+        $request = new Request();
+        $dispatcher = new Dispatcher();
+        $dbConnection = new DbConnection();
+        $dbConnection->openConnection();
+
+        $this->_context->setRequest($request);
+        $this->_context->setDispatcher($dispatcher);
+        $this->_context->setDbConnection($dbConnection);
     }
 
     public function run()

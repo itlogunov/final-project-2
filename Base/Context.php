@@ -13,8 +13,8 @@ class Context
     /** @var Dispatcher */
     private $_dispatcher;
 
-    /** @var DB */
-    private $_db;
+    /** @var DbConnection */
+    private $_dbConnection;
 
     private function __construct()
     {
@@ -66,18 +66,18 @@ class Context
     }
 
     /**
-     * @return DB
+     * @return DbConnection
      */
-    public function getDb(): DB
+    public function getDbConnection(): DbConnection
     {
-        return $this->_db;
+        return $this->_dbConnection;
     }
 
     /**
-     * @param DB $db
+     * @param DbConnection $dbConnection
      */
-    public function setDb(DB $db): void
+    public function setDbConnection(DbConnection $dbConnection): void
     {
-        $this->_db = $db;
+        $this->_dbConnection = $dbConnection;
     }
 }

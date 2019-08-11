@@ -1,0 +1,30 @@
+<h1>Запретная зона, доступ только авторизированному пользователю</h1>
+<h2>Информация выводится из базы данных</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Пользователь(логин)</th>
+        <th>Имя</th>
+        <th>возраст</th>
+        <th>описание</th>
+        <th>Фотография</th>
+        <th>Действия</th>
+    </tr>
+    <?php foreach ($this->users as $user): ?>
+        <tr>
+
+            <td><?= $user['email']; ?></td>
+            <td><?= $user['name']; ?></td>
+            <td><?= $user['age']; ?></td>
+            <td><?= $user['description']; ?></td>
+            <td>
+                <?php if (isset($user['images'][0]['name'])):?>
+                    <img src="<?= $user['images'][0]['name']; ?>" alt="">
+                <?php endif; ?>
+            </td>
+            <td>
+                <a href="/user/destroy/?id=<?= $user['id']; ?>">Удалить пользователя</a>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>

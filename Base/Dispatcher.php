@@ -19,6 +19,12 @@ class Dispatcher
             ],
             'Register' => [
                 'index' => 'User.register'
+            ],
+            'Users' => [
+                'index' => 'User.list'
+            ],
+            'Files' => [
+                'index' => 'File.list'
             ]
         ];
     }

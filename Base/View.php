@@ -11,7 +11,7 @@ class View
      * @param $name
      * @param $value
      */
-    public function __set($name, $value): void
+    public function __set($name, $value)
     {
         $this->_data[$name] = $value;
     }
@@ -20,7 +20,7 @@ class View
      * @param $name
      * @return string
      */
-    public function __get($name): string
+    public function __get($name)
     {
         $value = '';
         if (isset($this->_data[$name])) {
