@@ -48,6 +48,78 @@ class User extends Controller
         }
     }
 
+    /**
+     * Создание пользователя из админки
+     */
+    public function createAction()
+    {
+        $userId = Session::instance()->getUserId();
+        if (!$userId) {
+            header('Location: /auth');
+            die();
+        }
+
+        if ($this->addAction()) {
+            header('Location: /users');
+            die();
+        }
+    }
+
+    /**
+     * Редактирование пользователя из админки
+     */
+    public function updateAction()
+    {
+        $userId = Session::instance()->getUserId();
+        if (!$userId) {
+            header('Location: /auth');
+            die();
+        }
+
+        $request = Context::instance()->getRequest();
+        $params = $request->getRequestParams();
+        $user = UserModel::with('images')->find((int)$params['user_id']);
+        if (isset($user)) {
+            if (isset($params['update']) && $params['update'] == 1) {
+                $validated = $this->validate($params);
+                if ($validated !== true) {
+                    $this->view->errors = $validated;
+                } else {
+                    if (isset($user)) {
+                        $user->email = $params['login'];
+                        $user->name = $params['name'];
+                        $user->age = $params['age'];
+                        $user->description = $params['description'];
+                        $user->password = sha1($params['password']);
+                        if ($user->save()) {
+                            $userId = $user->id;
+
+                            // Сохраняем фотографию
+                            $file = new File();
+                            $fileName = $file->saveUserPhotoFile($_FILES['photo']);
+                            $file->saveUserPhotoToDb($fileName, $userId);
+
+                            header('Location: /users');
+                            die();
+                        }
+                    } else {
+                        $this->view->errors = 'Пользователя не существует';
+                    }
+                }
+            }
+
+            $this->view->user = $user;
+
+            return true;
+        }
+
+        header('Location: /users');
+        die();
+    }
+
+    /**
+     * Регистрация пользователя
+     */
     public function registerAction()
     {
         $userId = Session::instance()->getUserId();
@@ -56,19 +128,19 @@ class User extends Controller
             die();
         }
 
+        if ($newUserId = $this->addAction()) {
+            Session::instance()->save($newUserId);
+            header('Location: /auth');
+            die();
+        }
+    }
+
+    public function addAction()
+    {
         $request = Context::instance()->getRequest();
         $params = $request->getRequestParams();
         if (isset($params['register']) && $params['register'] == 1) {
-            $validated = GUMP::is_valid(array_merge($params, $_FILES), array(
-                'login' => 'required|valid_email',
-                'name' => 'required|max_len,100|min_len,3',
-                'age' => 'required|numeric|min_numeric,6|max_numeric, 100',
-                'description' => 'required|max_len,200|min_len,3',
-                'photo' => 'required_file|extension,png;jpg;jpeg',
-                'password' => 'required|max_len,100|min_len,6',
-                'password_confirm' => 'equalsfield,password'
-            ));
-
+            $validated = $this->validate($params);
             if ($validated !== true) {
                 $this->view->errors = $validated;
             } else {
@@ -81,7 +153,6 @@ class User extends Controller
                     $user->description = $params['description'];
                     $user->password = sha1($params['password']);
                     if ($user->save()) {
-
                         $userId = $user->getKey('id');
 
                         // Сохраняем фотографию
@@ -89,10 +160,7 @@ class User extends Controller
                         $fileName = $file->saveUserPhotoFile($_FILES['photo']);
                         $file->saveUserPhotoToDb($fileName, $userId);
 
-                        Session::instance()->save($userId);
-                        header('Location: /auth');
-                        die();
-
+                        return $userId;
                     }
                 } else {
                     $this->view->errors = ['Пользователь существует'];
@@ -101,6 +169,19 @@ class User extends Controller
 
             $this->view->fields = [$params];
         }
+    }
+
+    protected function validate($params)
+    {
+        return GUMP::is_valid(array_merge($params, $_FILES), array(
+            'login' => 'required|valid_email',
+            'name' => 'required|max_len,100|min_len,3',
+            'age' => 'required|numeric|min_numeric,6|max_numeric, 100',
+            'description' => 'required|max_len,200|min_len,3',
+            'photo' => 'required_file|extension,png;jpg;jpeg',
+            'password' => 'required|max_len,100|min_len,6',
+            'password_confirm' => 'equalsfield,password'
+        ));
     }
 
     public function listAction()

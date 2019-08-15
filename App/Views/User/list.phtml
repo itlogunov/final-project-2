@@ -1,6 +1,10 @@
 <h1>Запретная зона, доступ только авторизированному пользователю</h1>
 <h2>Информация выводится из базы данных</h2>
 
+<br>
+<a href="/user/create" class="btn btn-success">Добавить пользователя</a>
+<br>
+<br>
 <table class="table table-bordered">
     <tr>
         <th>Пользователь(логин)</th>
@@ -23,7 +27,10 @@
                 <?php endif; ?>
             </td>
             <td>
-                <a href="/user/destroy/?id=<?= $user['id']; ?>">Удалить пользователя</a>
+                <a href="/user/update/?user_id=<?= $user['id']; ?>" class="btn btn-primary">Редактировать пользователя</a>
+                <br>
+                <br>
+                <a href="/user/destroy/?id=<?= $user['id']; ?>" class="btn btn-danger">Удалить пользователя</a>
                 <br>
                 <br>
                 <br>
@@ -35,6 +42,7 @@
                         <button type="submit" class="btn btn-default">Изменить фото</button>
                     </div>
                 </form>
+
             </td>
         </tr>
     <?php endforeach; ?>

@@ -42,14 +42,31 @@ class File extends Controller
 
     public function saveUserPhotoToDb($photoName, $userId)
     {
+        $this->deleteUserPhoto($userId);
+
         $file = new FileModel();
         $file->name = $photoName;
         $file->user_id = $userId;
+
         if (!$file->save()) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Удаляем старую фотографию пользователя, если существует
+     *
+     * @param $userId
+     */
+    public function deleteUserPhoto($userId)
+    {
+        $oldFile = FileModel::where('user_id', '=', $userId)->first();
+        if ($oldFile) {
+            $this->deleteFileDisk($oldFile->name);
+            FileModel::destroy($oldFile->getKey('id'));
+        }
     }
 
     public function changeUserPhotoAction()
@@ -73,13 +90,6 @@ class File extends Controller
         }
 
         if ($photoName = $this->saveUserPhotoFile($file)) {
-
-            // Удаляем старую фотографию пользователя
-            $oldFile = FileModel::where('user_id', '=', $userId)->first();
-            if ($oldFile) {
-                $this->deleteFileDisk($oldFile->name);
-                FileModel::destroy($oldFile->getKey('id'));
-            }
 
             // Сохраняем новый файл
             $this->saveUserPhotoToDb($photoName, $userId);
