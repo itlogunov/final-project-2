@@ -7,7 +7,7 @@
   },
   "require": {
     "intervention/image": "^2.5",
-    "illuminate/database": "^5.8",
+    "illuminate/database": "^6.20",
     "fzaninotto/faker": "^1.8",
     "symfony/dotenv": "^4.3",
     "wixel/gump": "dev-master"
